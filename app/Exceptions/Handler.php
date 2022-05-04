@@ -8,6 +8,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -56,6 +57,8 @@ class Handler extends ExceptionHandler
             return response()->json(['code' => Result::CODE_FAIL, 'message' => Result::getMessage(Result::CODE_FAIL), 'errors' => $errors], ResponseAlias::HTTP_BAD_REQUEST);
         } else if ($e instanceof NotFoundHttpException) {
             return response()->json(['code' => Result::CODE_NOT_FOUND, 'message' => Result::getMessage(Result::CODE_NOT_FOUND)], ResponseAlias::HTTP_NOT_FOUND);
+        } else if ($e instanceof MethodNotAllowedHttpException) {
+            return response()->json(['code' => Result::CODE_METHOD_NOT_ALLOW, 'message' => Result::getMessage(Result::CODE_METHOD_NOT_ALLOW)], ResponseAlias::HTTP_METHOD_NOT_ALLOWED);
         }
 
         return response()->json(['code' => Result::CODE_FAIL, 'message' => Result::getMessage(Result::CODE_FAIL)], ResponseAlias::HTTP_SERVICE_UNAVAILABLE);
